@@ -11,7 +11,6 @@ const gameBoard = (() =>
     const showStart = () =>
     {
         startDiv = document.createElement("div");
-        startDiv.style.opacity = "0.5";
         startDiv.style.backgroundColor = "White";
         startDiv.textContent = "Press to START!";
         startDiv.style.textAlign = "center";
@@ -36,4 +35,15 @@ const gameBoard = (() =>
     }
     return {showStart};
 })();
+
+const gameFlow = (() => 
+{
+    let xturn = true;
+    const isWon = (array)
+})();
+const player = (name, type) =>
+{
+    let score = 0;
+
+}
 gameBoard.showStart();
