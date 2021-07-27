@@ -1,0 +1,30 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Shadows Into Light', cursive;
+}
+html
+{
+    height: 100%;
+    width: 100%;
+}
+header
+{
+    display: flex;
+    justify-content: center;
+}
+#header
+{
+    font-size: 3rem;
+}
+main
+{
+    display: flex;
+    flex-direction: row;
+}
+#gameboard
+{
+    border: 1px solid black;
+}
