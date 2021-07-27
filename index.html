@@ -15,19 +15,19 @@
         <main>
             <div id="player">
                 <div id="playerselect">
-                    <button id="playerx">X</button>
-                    <button id="playero">O</button>
+                    <input type="radio" id="xselect" name="pselect" value="xselect" checked>
+                    <label for="xselect">X</label>
+                    <input type="radio" id="oselect" name="pselect" value="oselect">
+                    <label for="oselect">O</label>
                 </div>
                 <div id="modeselect">
-                    <button id="ai">AI</button>
-                    <button id="p2">P2</button>
+                    <input type="radio" id="aiselect" name="modeselect" value="aiselect" checked>
+                    <label for="aiselect">AI</label>
+                    <input type="radio" id="p2select" name="modeselect" value="p2select">
+                    <label for="p2select">P2</label>
                 </div>
             </div>
             <div id="gameboard">
-            </div>
-            <div id="results">
-                <button>restart</button>
-                <div id="congratz"></div>
             </div>
         </main>
         <footer>
