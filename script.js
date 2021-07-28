@@ -19,17 +19,19 @@ const gameBoard = (() =>
 {
     const gb = document.getElementById("gameboard")
     let startDiv ;
-    const showStart = () =>
+    const showStart = (type) =>
     {
         startDiv = document.createElement("div");
+        startDiv.style.position = 'absolute';
         startDiv.style.backgroundColor = "White";
-        startDiv.textContent = "Press to START!";
+        startDiv.style.opacity = '0.5';
+        startDiv.textContent = `Press to ${type}!`;
         startDiv.style.textAlign = "center";
         startDiv.style.lineHeight = "35rem";
         startDiv.style.fontSize = "1.5rem";
         startDiv.style.userSelect = "none";
-        startDiv.style.gridRow = "1 / 4";
-        startDiv.style.gridColumn = "1 / 4";
+        startDiv.style.height = "35rem";
+        startDiv.style.width = "35rem";
         startDiv.addEventListener("click", init);
         gb.appendChild(startDiv);
     }
@@ -40,7 +42,7 @@ const gameBoard = (() =>
             [0 , 0 , 0],
             [0 , 0 , 0]
         ];
-        gb.removeChild(startDiv)
+        gb.innerHTML = '';
         for (let x = 0; x < 3; x++) 
         {
             for (let y = 0; y < 3; y++) 
@@ -113,9 +115,9 @@ const gameFlow = ((player1, player2) =>
     }
     const endGame = () =>
     {
-
+        gameBoard.showStart("RESTART");
     }
     return {move};
 })(player(1), player(2));
 
-gameBoard.showStart();
+gameBoard.showStart('START');
