@@ -69,21 +69,21 @@ const gameFlow = ((player1, player2) =>
     {
         if(array[x][y] == 0)
         {
-            if(xturn == 1) 
+            if(turn == 1) 
             {
                 player1.move(e, array, x, y); 
-                xturn == 2;
             }
             else
             {
                 player2.move(e, array, x, y);
-                xturn == 1;
             } 
             console.log(array);
             if(checkWin(array))
             {
+                console.log("BLA");
                 endGame();
             }
+            turn == 1 ? turn = 2 : turn = 1;
         }
     }
     const checkWin = (array) =>
