@@ -64,15 +64,56 @@ const gameBoard = (() =>
 
 const gameFlow = ((player1, player2) => 
 {
-    let xturn = true;
+    let turn = 1;
     const move = (e, array, x, y) => 
     {
         if(array[x][y] == 0)
         {
-            xturn ? player1.move(e, array, x, y) : player2.move(e, array, x, y);
-            xturn = !xturn;
+            if(xturn == 1) 
+            {
+                player1.move(e, array, x, y); 
+                xturn == 2;
+            }
+            else
+            {
+                player2.move(e, array, x, y);
+                xturn == 1;
+            } 
             console.log(array);
+            if(checkWin(array))
+            {
+                endGame();
+            }
         }
+    }
+    const checkWin = (array) =>
+    {
+        // LEFT DIAGONAL
+        if(array[0][0] == turn && array[1][1] == turn && array[2][2] == turn)
+        {
+            return true;
+        }
+        // RIGHT DIAGONAL
+        if(array[0][2] == turn && array[1][1] == turn && array[2][0] == turn)
+        {
+            return true;
+        }
+        for (let i = 0; i < 3; i++) 
+        {
+            if(array[0][i] == turn && array[1][i] == turn && array[2][i] == turn)     
+            {
+                return true;
+            }   
+            if(array[i][0] == turn && array[i][1] == turn && array[i][2] == turn)     
+            {
+                return true;
+            }   
+        }
+        return false;
+    }
+    const endGame = () =>
+    {
+
     }
     return {move};
 })(player(1), player(2));
