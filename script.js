@@ -1,4 +1,3 @@
-
 const player = (type) =>
 {
     
@@ -7,7 +6,41 @@ const player = (type) =>
         gameBoard.applyMove(x, y, type);
         array[x][y] = type;
     }
-    
+    const findBestMove = (array) =>
+    {
+        moves = allMoves(array, type);
+        let bestScore = -Infinity;
+        let bestMove;
+        moves.forEach(element => {
+        array[element.x, element.y] = type;
+        let score = miniMax(array, false);
+        array[element.x, element.y] = 0;
+        if(score > bestScore) 
+        { 
+            bestScore = score;
+            bestMove = element;
+        }
+        });
+    }
+    const miniMax = (array, isTurn) => 
+    {
+
+    }
+    const allMoves = (array, typ) =>
+    {
+        moves = [];
+        for (let x = 0; x < 3; x++) 
+        {
+            for (let y = 0; y < 3; y++) 
+            {
+                if(array[x][y] === 0)
+                {
+                    moves.push({x, y});
+                }
+            }
+        }
+        return moves;
+    }
     return{move};
 }
 const gameBoard = (() =>
@@ -78,7 +111,7 @@ const gameFlow = ((player1, player2) =>
         {
             player1.move(array, x, y);
 
-            if(checkWin(array) != 0 )
+            if(checkWin(array) != 0)
             {
                 endGame();
             }
