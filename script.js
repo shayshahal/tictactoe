@@ -1,6 +1,5 @@
 const player = (type) =>
 {
-    
     const move = (array, x, y) =>
     {
         gameBoard.applyMove(x, y, type);
@@ -8,7 +7,7 @@ const player = (type) =>
     }
     const findBestMove = (array) =>
     {
-        moves = allMoves(array, type);
+        let moves = allMoves(array, type);
         let bestScore = -Infinity;
         let bestMove;
         moves.forEach(element => {
@@ -21,12 +20,38 @@ const player = (type) =>
             bestMove = element;
         }
         });
+        return bestMove;
     }
     const miniMax = (array, isTurn) => 
     {
+        let eval = gameFlow.checkWin(array);
+        if(eval !== 0)
+        {
+            return eval === type ? 10 : -10;
+        }
 
+        let moves = allMoves(array)
+        if(isTurn)
+        {
+            let value = -Infinity;
+            moves.forEach(element => {
+                array[element.x, element.y] = type;
+                value = Math.max(value, miniMax(array, false));
+                array[element.x, element.y] = 0;
+            });
+        }
+        else
+        {
+            let value = Infinity;
+            moves.forEach(element => {
+                array[element.x, element.y] = type;
+                value = Math.min(value, miniMax(array, true));
+                array[element.x, element.y] = 0;
+            });
+        }
+        return value;
     }
-    const allMoves = (array, typ) =>
+    const allMoves = (array) =>
     {
         moves = [];
         for (let x = 0; x < 3; x++) 
