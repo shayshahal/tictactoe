@@ -64,7 +64,18 @@ main
     text-align: center;
     background-color: white;
 }
-
+.start-div
+{
+    position: absolute;
+    background-color: White;
+    opacity: 0.5;
+    text-align: center;
+    line-height: 35rem;
+    font-size: 1.5rem;
+    user-select: none;
+    height: 35rem;
+    width: 35rem;
+}
 #name
 {
     

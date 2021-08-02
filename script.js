@@ -1,37 +1,25 @@
+
 const player = (type) =>
 {
     
-    const move = (e, array, x, y) =>
+    const move = (array, x, y) =>
     {
-        if(type == 1)
-        {
-            e.textContent = 'X';
-        }
-        else
-        {
-            e.textContent = 'O';
-        }
+        gameBoard.applyMove(x, y, type);
         array[x][y] = type;
     }
+    
     return{move};
 }
 const gameBoard = (() =>
 {
     const gb = document.getElementById("gameboard")
     let startDiv ;
+    let divs;
     const showStart = (type) =>
     {
         startDiv = document.createElement("div");
-        startDiv.style.position = 'absolute';
-        startDiv.style.backgroundColor = "White";
-        startDiv.style.opacity = '0.5';
         startDiv.textContent = `Press to ${type}!`;
-        startDiv.style.textAlign = "center";
-        startDiv.style.lineHeight = "35rem";
-        startDiv.style.fontSize = "1.5rem";
-        startDiv.style.userSelect = "none";
-        startDiv.style.height = "35rem";
-        startDiv.style.width = "35rem";
+        startDiv.classList.add("start-div");
         startDiv.addEventListener("click", init);
         gb.appendChild(startDiv);
     }
@@ -41,6 +29,11 @@ const gameBoard = (() =>
             [0 , 0 , 0],
             [0 , 0 , 0],
             [0 , 0 , 0]
+        ];
+        divs = [
+            [null , null , null],
+            [null , null , null],
+            [null , null , null]
         ];
         gb.innerHTML = '';
         for (let x = 0; x < 3; x++) 
@@ -54,70 +47,73 @@ const gameBoard = (() =>
                 newDiv.classList.add("game-box");
                 function makeMove()
                 {
-                    gameFlow.move(newDiv, array, x, y);
+                    gameFlow.move(array, x, y);
                 }
                 newDiv.addEventListener("click", makeMove);
                 gb.appendChild(newDiv);           
+                divs[x][y] = newDiv;
             }
         }
     }
-    return {showStart};
+    const applyMove = (x, y, type) =>
+    {
+        if(type == 1)
+        {
+            divs[x][y].textContent = 'X';
+        }
+        else
+        {
+            divs[x][y].textContent = 'O';
+        }
+    }
+    return {showStart, applyMove};
 })();
 
 const gameFlow = ((player1, player2) => 
 {
-    let turn = 1;
-    const move = (e, array, x, y) => 
+    let xturn = true;
+    const move = (array, x, y) => 
     {
         if(array[x][y] == 0)
         {
-            if(turn == 1) 
+            player1.move(array, x, y);
+
+            if(checkWin(array) != 0 )
             {
-                player1.move(e, array, x, y); 
-            }
-            else
-            {
-                player2.move(e, array, x, y);
-            } 
-            console.log(array);
-            if(checkWin(array))
-            {
-                console.log("BLA");
                 endGame();
             }
-            turn == 1 ? turn = 2 : turn = 1;
         }
     }
     const checkWin = (array) =>
     {
         // LEFT DIAGONAL
-        if(array[0][0] == turn && array[1][1] == turn && array[2][2] == turn)
+        if(array[0][0] === array[1][1] && array[1][1] === array[2][2] && array[0][0] !== 0)
         {
-            return true;
+            return array[0][0];
         }
         // RIGHT DIAGONAL
-        if(array[0][2] == turn && array[1][1] == turn && array[2][0] == turn)
-        {
-            return true;
-        }
-        for (let i = 0; i < 3; i++) 
-        {
-            if(array[0][i] == turn && array[1][i] == turn && array[2][i] == turn)     
+        if(array[0][2] == array[1][1] && array[1][1] == array[2][0] && array[0][2] !== 0)
             {
-                return true;
-            }   
-            if(array[i][0] == turn && array[i][1] == turn && array[i][2] == turn)     
+            return array[0][2];
+        }
+        for (let j = 0; j < 3; j++) 
+        {
+            if(array[0][j] == array[1][j] && array[1][j] == array[2][j] && array[2][j] !== 0)     
             {
-                return true;
+                return array[0][j];
+            }   
+            if(array[j][0] == array[j][1] && array[j][1] == array[j][2] && array[j][2] !== 0)     
+            {
+                return array[j][0];
             }   
         }
-        return false;
+        return 0;
     }
     const endGame = () =>
     {
         gameBoard.showStart("RESTART");
     }
-    return {move};
+    return {move, checkWin};
 })(player(1), player(2));
 
 gameBoard.showStart('START');
