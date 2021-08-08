@@ -11,9 +11,9 @@ const player = (type) =>
         let bestScore = -Infinity;
         let bestMove;
         moves.forEach(element => {
-        array[element.x, element.y] = type;
+        array[element.x][element.y] = type;
         let score = miniMax(array, false);
-        array[element.x, element.y] = 0;
+        array[element.x][element.y] = 0;
         if(score > bestScore) 
         { 
             bestScore = score;
@@ -22,31 +22,35 @@ const player = (type) =>
         });
         return bestMove;
     }
-    const miniMax = (array, isTurn) => 
+    const miniMax = (array, isTurn) =>
     {
         let eval = gameFlow.checkWin(array);
         if(eval !== 0)
         {
-            return eval === type ? 10 : -10;
+            return eval * type;
         }
-
-        let moves = allMoves(array)
+        let moves = allMoves(array);
+        if(moves.length === 0)
+        {
+            return 0;
+        }
+        let value;
         if(isTurn)
         {
-            let value = -Infinity;
+            value = -Infinity;
             moves.forEach(element => {
-                array[element.x, element.y] = type;
+                array[element.x][element.y] = type;
                 value = Math.max(value, miniMax(array, false));
-                array[element.x, element.y] = 0;
+                array[element.x][element.y] = 0;
             });
         }
         else
         {
-            let value = Infinity;
+            value = Infinity;
             moves.forEach(element => {
-                array[element.x, element.y] = type;
+                array[element.x][element.y] = type * -1;
                 value = Math.min(value, miniMax(array, true));
-                array[element.x, element.y] = 0;
+                array[element.x][element.y] = 0;
             });
         }
         return value;
@@ -66,12 +70,12 @@ const player = (type) =>
         }
         return moves;
     }
-    return{move};
+    return{move, findBestMove};
 }
 const gameBoard = (() =>
 {
     const gb = document.getElementById("gameboard")
-    let startDiv ;
+    let startDiv;
     let divs;
     const showStart = (type) =>
     {
@@ -115,7 +119,7 @@ const gameBoard = (() =>
     }
     const applyMove = (x, y, type) =>
     {
-        if(type == 1)
+        if(type === 1)
         {
             divs[x][y].textContent = 'X';
         }
@@ -135,11 +139,28 @@ const gameFlow = ((player1, player2) =>
         if(array[x][y] == 0)
         {
             player1.move(array, x, y);
-
-            if(checkWin(array) != 0)
+            if(checkWin(array) !== 0)
             {
                 endGame();
             }
+            let aiMove = player2.findBestMove(array);
+            player2.move(array, aiMove.x, aiMove.y);
+            let winner = checkWin(array);
+            if(winner !== 0)
+            {
+                endGame(winner);
+            }
+        }
+    }
+    const ai = (array) =>
+    {
+        let aiMove = player2.findBestMove(array);
+        player2.move(array, aiMove.x, aiMove.y);
+        // Check if game ended after move
+        let winner = checkWin(array);
+        if(winner !== 0)
+        {
+            endGame(winner);
         }
     }
     const checkWin = (array) =>
@@ -149,29 +170,37 @@ const gameFlow = ((player1, player2) =>
         {
             return array[0][0];
         }
+
         // RIGHT DIAGONAL
-        if(array[0][2] == array[1][1] && array[1][1] == array[2][0] && array[0][2] !== 0)
-            {
+        if(array[0][2] === array[1][1] && array[1][1] === array[2][0] && array[0][2] !== 0)
+        {
             return array[0][2];
         }
+
+        // Check rows and cols simultaneously
         for (let j = 0; j < 3; j++) 
         {
-            if(array[0][j] == array[1][j] && array[1][j] == array[2][j] && array[2][j] !== 0)     
+            if(array[0][j] === array[1][j] && array[1][j] === array[2][j] && array[2][j] !== 0)     
             {
                 return array[0][j];
             }   
-            if(array[j][0] == array[j][1] && array[j][1] == array[j][2] && array[j][2] !== 0)     
+            if(array[j][0] === array[j][1] && array[j][1] === array[j][2] && array[j][2] !== 0)     
             {
                 return array[j][0];
             }   
         }
+
+        // Check if board is full
+        if(array.flat().every(x => x !== 0))
+            return -1;
+        
         return 0;
     }
-    const endGame = () =>
+    const endGame = (winner) =>
     {
         gameBoard.showStart("RESTART");
     }
     return {move, checkWin};
-})(player(1), player(2));
+})(player(1), player(-1));
 
 gameBoard.showStart('START');
