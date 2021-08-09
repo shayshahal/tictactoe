@@ -103,7 +103,7 @@ const gameBoard = (() =>
             for (let y = 0; y < 3; y++) 
             {
                 const newDiv = document.createElement("div");
-                newDiv.style.backgroundColor = "White";
+                newDiv.style.backgroundColor = "#DAC9C9";
                 newDiv.style.fontSize = "7rem";
                 newDiv.style.userSelect = "none";
                 newDiv.classList.add("game-box");

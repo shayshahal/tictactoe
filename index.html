@@ -8,34 +8,27 @@
     </head>
     <body>
         <header>
-            <div id="header">
-                It's a Tic Tac Toe!
-            </div>
+            <label class="switch">
+                <input type="checkbox" id="mselect" class="checkbox">
+                <span class="slider">
+                    <span>AI</span>
+                    <span>P2</span>
+                </span>
+            </label>
+            <div id="title">It's a Tic Tac Toe!</div>
+            <label class="switch">
+                <input type="checkbox" id="pselect" class="checkbox">
+                <span class="slider">
+                    <span>X</span>
+                    <span>O</span>
+                </span>
+            </label>
         </header>
-        <main>
-            <div id="player">
-                <div id="modeselect">
-                    <input type="radio" id="p2select" name="modeselect" value="P2" checked>
-                    <label for="p2select">P2</label>
-                    <input type="radio" id="aiselect" name="modeselect" value="AI">
-                    <label for="aiselect">AI</label>
-                </div>
-                <div id="names">
-                    <input type="text" id="name">
-                </div>
-                <div id="playerselect">
-                    <input type="radio" id="xselect" name="pselect" value="xselect" checked>
-                    <label for="xselect">X</label>
-                    <input type="radio" id="oselect" name="pselect" value="oselect">
-                    <label for="oselect">O</label>
-                </div>
-             
-            </div>
+        <main>  
             <div id="gameboard">
             </div>
         </main>
         <footer>
-            
         </footer>
     </body>
     <script src="script.js"></script>
