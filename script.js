@@ -184,10 +184,6 @@ const gameFlow = ((player1, player2) =>
     }
     const setPlayers = (isp1x) =>
     {
-        let x;
-        isp1x ? x = 1 : x = -1;
-        player1 = player(x);
-        player2 = player(-x);
         isP1X = isp1x;
     }
     const getPlayers = () =>
@@ -255,10 +251,10 @@ const gameFlow = ((player1, player2) =>
         }
 
         // Check if board is full
-        if(array.flat().every(x => x !== 0))
-            return -1;
+        if(array.flat().some(x => x === 0))
+            return 0;
         
-        return 0;
+        return -1;
     }
     const endGame = () =>
     {
