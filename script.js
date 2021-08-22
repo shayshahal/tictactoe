@@ -75,7 +75,7 @@ const player = (type) =>
 const gameBoard = (() =>
 {
     const gb = document.getElementById("gameboard");
-    let mcb = document.getElementById("mselect");
+    const mcb = document.getElementById("mselect");
     mcb.addEventListener("change", function()
     {
         if(this.checked)
@@ -86,9 +86,9 @@ const gameBoard = (() =>
         {
             gameFlow.setMode(true);
         }
-        init();
+        showStart("START");
     });
-    let pcb = document.getElementById("pselect");
+    const pcb = document.getElementById("pselect");
     pcb.addEventListener("change", function()
     {
         if(this.checked)
@@ -99,17 +99,29 @@ const gameBoard = (() =>
         {
             gameFlow.setPlayers(true);
         }
-        init();
+        showStart("START");
     });
+    let divs = [];
     let startDiv;
-    let divs;
+    let array;
     const showStart = (type) =>
     {
-        startDiv = document.createElement("div");
         startDiv.textContent = `Press to ${type}!`;
-        startDiv.classList.add("start-div");
-        startDiv.addEventListener("click", init);
-        gb.appendChild(startDiv);
+        startDiv.style.visibility  = "visible";
+    }
+    const start = () =>
+    {
+        startDiv.style.visibility  = "hidden";
+        divs.flat().forEach(div => div.textContent = ' ');
+         array = [
+            [0 , 0 , 0],
+            [0 , 0 , 0],
+            [0 , 0 , 0]
+        ];
+        if(gameFlow.getMode() && !gameFlow.getPlayers())
+        {
+            gameFlow.ai(array);
+        }
     }
     const init = () =>
     {     
@@ -118,25 +130,29 @@ const gameBoard = (() =>
             [null , null , null],
             [null , null , null]
         ];
-        gb.innerHTML = '';
         for (let x = 0; x < 3; x++) 
         {
             for (let y = 0; y < 3; y++) 
             {
-                const newDiv = document.createElement("div");
+                let newDiv = document.createElement("div");
                 newDiv.style.backgroundColor = "#DAC9C9";
                 newDiv.style.fontSize = "7rem";
                 newDiv.style.userSelect = "none";
                 newDiv.classList.add("game-box");
                 function makeMove()
                 {
-                    gameFlow.move(x, y);
+                    gameFlow.move(array, x, y);
                 }
                 newDiv.addEventListener("click", makeMove);
                 gb.appendChild(newDiv);           
                 divs[x][y] = newDiv;
             }
         }
+        startDiv = document.createElement("div");
+        startDiv.classList.add("start-div");
+        startDiv.addEventListener("click", start);
+        gb.appendChild(startDiv);
+        showStart('START');
     }
     const applyMove = (x, y, type) =>
     {
@@ -149,21 +165,22 @@ const gameBoard = (() =>
             divs[x][y].textContent = 'O';
         }
     }
-    return {showStart, applyMove};
+    return {init, applyMove, showStart};
 })();
 
 const gameFlow = ((player1, player2) => 
 {
-    const array = [
-        [0 , 0 , 0],
-        [0 , 0 , 0],
-        [0 , 0 , 0]
-    ];
+
     let xturn = true;
     let isAI = true;
+    let isP1X = true;
     const setMode = (isAi) =>
     {
         isAI = isAi;
+    }
+    const getMode = () => 
+    {
+        return isAI;
     }
     const setPlayers = (isp1x) =>
     {
@@ -171,12 +188,13 @@ const gameFlow = ((player1, player2) =>
         isp1x ? x = 1 : x = -1;
         player1 = player(x);
         player2 = player(-x);
-        if(isAI && !isp1x)
-        {
-            ai();
-        }
+        isP1X = isp1x;
     }
-    const move = (x, y) => 
+    const getPlayers = () =>
+    {
+        return isP1X;
+    }
+    const move = (array, x, y) => 
     {
         if(array[x][y] == 0)
         {
@@ -189,7 +207,7 @@ const gameFlow = ((player1, player2) =>
             {
                 if(isAI)
                 {
-                    ai();
+                    ai(array);
                 }
                 else
                 {
@@ -198,7 +216,7 @@ const gameFlow = ((player1, player2) =>
             }
         }
     }
-    const ai = () =>
+    const ai = (array) =>
     {
         let aiMove = player2.findBestMove(array);
         player2.move(array, aiMove.x, aiMove.y);
@@ -209,35 +227,35 @@ const gameFlow = ((player1, player2) =>
             endGame();
         }
     }
-    const checkWin = (arr) =>
+    const checkWin = (array) =>
     {
         // LEFT DIAGONAL
-        if(arr[0][0] === arr[1][1] && arr[1][1] === arr[2][2] && arr[0][0] !== 0)
+        if(array[0][0] === array[1][1] && array[1][1] === array[2][2] && array[0][0] !== 0)
         {
             return array[0][0];
         }
 
         // RIGHT DIAGONAL
-        if(arr[0][2] === arr[1][1] && arr[1][1] === arr[2][0] && arr[0][2] !== 0)
+        if(array[0][2] === array[1][1] && array[1][1] === array[2][0] && array[0][2] !== 0)
         {
-            return arr[0][2];
+            return array[0][2];
         }
 
         // Check rows and cols simultaneously
         for (let j = 0; j < 3; j++) 
         {
-            if(arr[0][j] === arr[1][j] && arr[1][j] === arr[2][j] && arr[2][j] !== 0)     
+            if(array[0][j] === array[1][j] && array[1][j] === array[2][j] && array[2][j] !== 0)     
             {
-                return arr[0][j];
+                return array[0][j];
             }   
-            if(arr[j][0] === arr[j][1] && arr[j][1] === arr[j][2] && arr[j][2] !== 0)     
+            if(array[j][0] === array[j][1] && array[j][1] === array[j][2] && array[j][2] !== 0)     
             {
-                return arr[j][0];
+                return array[j][0];
             }   
         }
 
         // Check if board is full
-        if(arr.flat().every(x => x !== 0))
+        if(array.flat().every(x => x !== 0))
             return -1;
         
         return 0;
@@ -246,7 +264,7 @@ const gameFlow = ((player1, player2) =>
     {
         gameBoard.showStart("RESTART");
     }
-    return {move, checkWin, setMode, setPlayers};
+    return {move, checkWin, ai, setMode, setPlayers, getMode, getPlayers};
 })(player(1), player(-1));
 
-gameBoard.showStart('START');
+gameBoard.init();
